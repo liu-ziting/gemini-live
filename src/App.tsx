@@ -30,6 +30,8 @@ if (typeof API_KEY !== "string") {
 const host = "liuziting-gemini-play-98-58acmhtr50hp.deno.dev";
 const uri = `wss://${host}/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent`;
 
+alert('温馨提示：为了获得最佳体验，请在浏览器中打开本页面并开启音视频权限。')
+
 function App() {
   // this video reference is used for displaying the active stream, whether that is the webcam or screen capture
   // feel free to style as you see fit
@@ -43,10 +45,9 @@ function App() {
         <div className="streaming-console">
           {/* <SidePanel /> */}
           <main>
-            <p className="prompt">温馨提示：为了获得最佳体验，请在浏览器中打开本页面并开启音视频权限。如需体验更多大模型对话，请访问：<a href="https://irritable.netlify.app/" target="_blank" rel="noopener noreferrer">https://irritable.netlify.app/</a></p>
-           
             <div className="main-app-area">
               {/* APP goes here */}
+            
               <Altair />
               <video
                 className={cn("stream", {
