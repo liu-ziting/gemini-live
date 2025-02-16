@@ -1,3 +1,5 @@
+// In ControlTray.tsx
+
 /**
  * Copyright 2024 Google LLC
  *
@@ -16,7 +18,7 @@
 
 import cn from "classnames";
 
-import { memo, ReactNode, RefObject, useEffect, useRef, useState, useCallback } from "react";
+import { memo, ReactNode, RefObject, useEffect, useRef, useState } from "react";
 import { useLiveAPIContext } from "../../contexts/LiveAPIContext";
 import { UseMediaStreamResult } from "../../hooks/use-media-stream-mux";
 import { useScreenCapture } from "../../hooks/use-screen-capture";
@@ -143,30 +145,28 @@ function ControlTray({
     };
   }, [connected, activeVideoStream, client, videoRef]);
 
-  const changeStreams = useCallback(
-    (next?: UseMediaStreamResult) => async () => {
-      if (next) {
-        try {
-          const mediaStream = await next.start();
-          setActiveVideoStream(mediaStream);
-          onVideoStreamChange(mediaStream);
-          setIsWebcamReady(true); // Set webcam as ready after stream starts
-        } catch (error) {
-          // Handle the error from starting the stream.  Important for camera switching.
-          console.error("Error starting stream:", error);
-          setIsWebcamReady(false); // Ensure webcam is not marked as ready on error
-          // Optionally, display an error message to the user.
-        }
-      } else {
-        setActiveVideoStream(null);
-        onVideoStreamChange(null);
-        setIsWebcamReady(false); // Webcam is no longer ready
+  //handler for swapping from one video-stream to the next
+  const changeStreams = (next?: UseMediaStreamResult) => async () => {
+    if (next) {
+      try {
+        const mediaStream = await next.start();
+        setActiveVideoStream(mediaStream);
+        onVideoStreamChange(mediaStream);
+        setIsWebcamReady(true); // Set webcam as ready after stream starts
+      } catch (error) {
+        // Handle the error from starting the stream.  Important for camera switching.
+        console.error("Error starting stream:", error);
+        setIsWebcamReady(false); // Ensure webcam is not marked as ready on error
+        // Optionally, display an error message to the user.
       }
+    } else {
+      setActiveVideoStream(null);
+      onVideoStreamChange(null);
+      setIsWebcamReady(false); // Webcam is no longer ready
+    }
 
-      videoStreams.filter((msr) => msr !== next).forEach((msr) => msr.stop());
-    },
-    [setActiveVideoStream, onVideoStreamChange, setIsWebcamReady, videoStreams],
-  );
+    videoStreams.filter((msr) => msr !== next).forEach((msr) => msr.stop());
+  };
 
   const handleToggleCamera = async () => {
     if (webcam.toggleFacingMode) {
@@ -182,11 +182,6 @@ function ControlTray({
       }
     }
   };
-
-  useEffect(() => {
-    // Start the webcam stream on component mount
-    changeStreams(webcam)();
-  }, [changeStreams, webcam]);
 
   return (
     <section className="control-tray">
@@ -218,7 +213,7 @@ function ControlTray({
             />
             <MediaStreamButton
               isStreaming={webcam.isStreaming}
-              start={() => Promise.resolve()} // Dummy start function
+              start={changeStreams(webcam)}
               stop={changeStreams()}
               onIcon="videocam_off"
               offIcon="videocam"
