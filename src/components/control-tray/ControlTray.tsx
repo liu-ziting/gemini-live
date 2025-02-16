@@ -1,3 +1,5 @@
+// In ControlTray.tsx
+
 /**
  * Copyright 2024 Google LLC
  *
@@ -71,6 +73,7 @@ function ControlTray({
   const [muted, setMuted] = useState(false);
   const renderCanvasRef = useRef<HTMLCanvasElement>(null);
   const connectButtonRef = useRef<HTMLButtonElement>(null);
+  const [isWebcamReady, setIsWebcamReady] = useState(false);
 
   const { client, connected, connect, disconnect, volume } =
     useLiveAPIContext();
@@ -149,14 +152,17 @@ function ControlTray({
         const mediaStream = await next.start();
         setActiveVideoStream(mediaStream);
         onVideoStreamChange(mediaStream);
+        setIsWebcamReady(true); // Set webcam as ready after stream starts
       } catch (error) {
         // Handle the error from starting the stream.  Important for camera switching.
         console.error("Error starting stream:", error);
+        setIsWebcamReady(false); // Ensure webcam is not marked as ready on error
         // Optionally, display an error message to the user.
       }
     } else {
       setActiveVideoStream(null);
       onVideoStreamChange(null);
+      setIsWebcamReady(false); // Webcam is no longer ready
     }
 
     videoStreams.filter((msr) => msr !== next).forEach((msr) => msr.stop());
@@ -215,7 +221,7 @@ function ControlTray({
             <button
               className="action-button"
               onClick={handleToggleCamera}
-              disabled={!webcam.isStreaming}
+              disabled={!isWebcamReady}
             >
               <span className="material-symbols-outlined">flip_camera_ios</span>
             </button>

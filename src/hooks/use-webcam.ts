@@ -1,3 +1,5 @@
+// In useWebcam.ts
+
 /**
  * Copyright 2024 Google LLC
  *
@@ -14,13 +16,14 @@
  * limitations under the License.
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { UseMediaStreamResult } from "./use-media-stream-mux";
 
 export function useWebcam(): UseMediaStreamResult {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [isStreaming, setIsStreaming] = useState(false);
   const [facingMode, setFacingMode] = useState<"user" | "environment">("environment"); // Default to back camera
+  const isInitialMount = useRef(true); // Track initial mount
 
   useEffect(() => {
     const handleStreamEnded = () => {
@@ -72,6 +75,15 @@ export function useWebcam(): UseMediaStreamResult {
     setFacingMode(facingMode === "user" ? "environment" : "user");
     // Start the stream again with the new facing mode.  Handle errors in the component that calls this hook.
   };
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+    } else if (stream) {
+      // Stream is available, so enable the toggle button
+      setIsStreaming(true);
+    }
+  }, [stream]);
 
   const result: UseMediaStreamResult = {
     type: "webcam",
