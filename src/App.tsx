@@ -4,7 +4,7 @@ import { LiveAPIProvider } from "./contexts/LiveAPIContext";
 import { Altair } from "./components/altair/Altair";
 import ControlTray from "./components/control-tray/ControlTray";
 import cn from "classnames";
-import { IoClose, IoArrowRedo } from "react-icons/io5"; // 引入关闭图标和翻转图标
+import { IoClose } from "react-icons/io5"; // 引入关闭图标
 import { Zenitho } from "uvcanvas"; // 导入 Lumiflex 组件
 
 const API_KEY = process.env.REACT_APP_GEMINI_API_KEY as string;
@@ -59,9 +59,9 @@ function App() {
               supportsVideo={true}
               onVideoStreamChange={setVideoStream}
             >
-              {/* 添加一个图标按钮用于切换视频翻转 */}
-              <button onClick={handleFlipToggle} className="control-button">
-                <IoArrowRedo size={24} color="white" />
+              {/* 添加一个按钮用于切换视频翻转 */}
+              <button onClick={handleFlipToggle}>
+                {isFlipped ? "Reset Video" : "Flip Video"}
               </button>
             </ControlTray>
           </main>
