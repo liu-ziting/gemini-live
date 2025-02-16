@@ -4,7 +4,7 @@ import { LiveAPIProvider } from "./contexts/LiveAPIContext";
 import { Altair } from "./components/altair/Altair";
 import ControlTray from "./components/control-tray/ControlTray";
 import cn from "classnames";
-import { IoClose } from "react-icons/io5"; // 引入关闭图标
+import { IoClose, IoArrowRedo } from "react-icons/io5"; // 引入关闭图标和翻转图标
 import { Zenitho } from "uvcanvas"; // 导入 Lumiflex 组件
 
 const API_KEY = process.env.REACT_APP_GEMINI_API_KEY as string;
@@ -19,10 +19,16 @@ function App() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
   const [showModal, setShowModal] = useState(true); // 控制弹出层显示
+  const [isFlipped, setIsFlipped] = useState(false); // 控制视频翻转状态
 
   // 关闭弹出层
   const handleCloseModal = () => {
     setShowModal(false);
+  };
+
+  // 切换视频翻转状态
+  const handleFlipToggle = () => {
+    setIsFlipped(!isFlipped);
   };
 
   return (
@@ -40,6 +46,7 @@ function App() {
               <video
                 className={cn("stream", {
                   hidden: !videoRef.current || !videoStream,
+                  flipped: isFlipped, // 应用翻转状态
                 })}
                 ref={videoRef}
                 autoPlay
@@ -52,7 +59,10 @@ function App() {
               supportsVideo={true}
               onVideoStreamChange={setVideoStream}
             >
-              {/* put your own buttons here */}
+              {/* 添加一个图标按钮用于切换视频翻转 */}
+              <button onClick={handleFlipToggle} className="control-button">
+                <IoArrowRedo size={24} color="white" />
+              </button>
             </ControlTray>
           </main>
         </div>
