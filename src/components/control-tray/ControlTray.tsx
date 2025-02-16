@@ -1,21 +1,3 @@
-/**
- * Copyright 2024 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-import cn from "classnames";
-
 import { memo, ReactNode, RefObject, useEffect, useRef, useState } from "react";
 import { useLiveAPIContext } from "../../contexts/LiveAPIContext";
 import { UseMediaStreamResult } from "../../hooks/use-media-stream-mux";
@@ -24,6 +6,7 @@ import { useWebcam } from "../../hooks/use-webcam";
 import { AudioRecorder } from "../../lib/audio-recorder";
 import AudioPulse from "../audio-pulse/AudioPulse";
 import "./control-tray.scss";
+import cn from "classnames"; // 添加 classnames 引入
 
 export type ControlTrayProps = {
   videoRef: RefObject<HTMLVideoElement>;
@@ -80,6 +63,7 @@ function ControlTray({
       connectButtonRef.current.focus();
     }
   }, [connected]);
+
   useEffect(() => {
     document.documentElement.style.setProperty(
       "--volume",
@@ -156,6 +140,14 @@ function ControlTray({
     videoStreams.filter((msr) => msr !== next).forEach((msr) => msr.stop());
   };
 
+  // 添加双击切换摄像头功能
+  const handleDoubleClick = () => {
+    if (webcam.toggleCamera) {
+      webcam.toggleCamera();  // 只有在 toggleCamera 存在的情况下才调用
+    }
+  };
+
+
   return (
     <section className="control-tray">
       <canvas style={{ display: "none" }} ref={renderCanvasRef} />
@@ -191,6 +183,10 @@ function ControlTray({
               onIcon="videocam_off"
               offIcon="videocam"
             />
+            {/* 添加双击事件 */}
+            <button onDoubleClick={handleDoubleClick} className="action-button">
+              <span className="material-symbols-outlined">flip_camera_ios</span>
+            </button>
           </>
         )}
         {children}
