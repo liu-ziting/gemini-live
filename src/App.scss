@@ -144,6 +144,7 @@ body {
     gap: 1rem;
     max-width: 100%;
     overflow: hidden;
+    z-index: 999;
   }
 
   .main-app-area {
@@ -185,6 +186,7 @@ body {
   max-width: 90%;
   border-radius: 32px;
   max-height: fit-content;
+  z-index: 99999999;
 }
 
 
