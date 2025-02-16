@@ -1,5 +1,3 @@
-// In ControlTray.tsx
-
 /**
  * Copyright 2024 Google LLC
  *
@@ -186,7 +184,7 @@ function ControlTray({
   useEffect(() => {
     // Start the webcam stream on component mount
     changeStreams(webcam)();
-  }, []);
+  }, [changeStreams, webcam]);
 
   return (
     <section className="control-tray">
@@ -218,7 +216,7 @@ function ControlTray({
             />
             <MediaStreamButton
               isStreaming={webcam.isStreaming}
-              start={changeStreams(webcam)}
+              start={() => Promise.resolve()} // Dummy start function
               stop={changeStreams()}
               onIcon="videocam_off"
               offIcon="videocam"
