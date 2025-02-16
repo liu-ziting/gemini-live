@@ -27,7 +27,7 @@ if (typeof API_KEY !== "string") {
   throw new Error("set REACT_APP_GEMINI_API_KEY in .env");
 }
 
-const host = "generativelanguage.googleapis.com";
+const host = "liuziting-gemini-play-98-58acmhtr50hp.deno.dev";
 const uri = `wss://${host}/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent`;
 
 function App() {
