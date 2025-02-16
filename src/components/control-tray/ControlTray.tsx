@@ -183,6 +183,11 @@ function ControlTray({
     }
   };
 
+  useEffect(() => {
+    // Start the webcam stream on component mount
+    changeStreams(webcam)();
+  }, []);
+
   return (
     <section className="control-tray">
       <canvas style={{ display: "none" }} ref={renderCanvasRef} />
@@ -218,13 +223,15 @@ function ControlTray({
               onIcon="videocam_off"
               offIcon="videocam"
             />
-            <button
-              className="action-button"
-              onClick={handleToggleCamera}
-              disabled={!isWebcamReady}
-            >
-              <span className="material-symbols-outlined">flip_camera_ios</span>
-            </button>
+            {webcam.isStreaming && (
+              <button
+                className="action-button"
+                onClick={handleToggleCamera}
+                disabled={!isWebcamReady}
+              >
+                <span className="material-symbols-outlined">flip_camera_ios</span>
+              </button>
+            )}
           </>
         )}
         {children}

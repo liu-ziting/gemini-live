@@ -48,7 +48,7 @@ export function useWebcam(): UseMediaStreamResult {
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode: facingMode,
+          facingMode: facingMode, // Use the current facingMode state
         },
       });
       setStream(mediaStream);
@@ -72,7 +72,7 @@ export function useWebcam(): UseMediaStreamResult {
 
   const toggleFacingMode = async () => {
     stop(); // Stop the current stream before switching cameras
-    setFacingMode(facingMode === "user" ? "environment" : "user");
+    setFacingMode((prevFacingMode) => (prevFacingMode === "user" ? "environment" : "user")); // Use functional update
     // Start the stream again with the new facing mode.  Handle errors in the component that calls this hook.
   };
 
