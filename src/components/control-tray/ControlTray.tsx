@@ -143,9 +143,10 @@ function ControlTray({
   // 添加双击切换摄像头功能
   const handleDoubleClick = () => {
     if (webcam.toggleCamera) {
-      webcam.toggleCamera();  // 只有在 toggleCamera 存在的情况下才调用
+      webcam.toggleCamera();  // 切换摄像头
     }
   };
+
 
 
   return (
