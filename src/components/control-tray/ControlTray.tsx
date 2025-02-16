@@ -1,5 +1,3 @@
-// In ControlTray.tsx
-
 /**
  * Copyright 2024 Google LLC
  *
@@ -73,7 +71,6 @@ function ControlTray({
   const [muted, setMuted] = useState(false);
   const renderCanvasRef = useRef<HTMLCanvasElement>(null);
   const connectButtonRef = useRef<HTMLButtonElement>(null);
-  const [isWebcamReady, setIsWebcamReady] = useState(false);
 
   const { client, connected, connect, disconnect, volume } =
     useLiveAPIContext();
@@ -148,39 +145,15 @@ function ControlTray({
   //handler for swapping from one video-stream to the next
   const changeStreams = (next?: UseMediaStreamResult) => async () => {
     if (next) {
-      try {
-        const mediaStream = await next.start();
-        setActiveVideoStream(mediaStream);
-        onVideoStreamChange(mediaStream);
-        setIsWebcamReady(true); // Set webcam as ready after stream starts
-      } catch (error) {
-        // Handle the error from starting the stream.  Important for camera switching.
-        console.error("Error starting stream:", error);
-        setIsWebcamReady(false); // Ensure webcam is not marked as ready on error
-        // Optionally, display an error message to the user.
-      }
+      const mediaStream = await next.start();
+      setActiveVideoStream(mediaStream);
+      onVideoStreamChange(mediaStream);
     } else {
       setActiveVideoStream(null);
       onVideoStreamChange(null);
-      setIsWebcamReady(false); // Webcam is no longer ready
     }
 
     videoStreams.filter((msr) => msr !== next).forEach((msr) => msr.stop());
-  };
-
-  const handleToggleCamera = async () => {
-    if (webcam.toggleFacingMode) {
-      try {
-        await webcam.toggleFacingMode();
-        // Restart the webcam stream after toggling the camera.
-        if (webcam.isStreaming) {
-          changeStreams(webcam)(); // Re-initialize the webcam stream
-        }
-      } catch (error) {
-        console.error("Error toggling camera:", error);
-        // Optionally, display an error message to the user.
-      }
-    }
   };
 
   return (
@@ -218,15 +191,6 @@ function ControlTray({
               onIcon="videocam_off"
               offIcon="videocam"
             />
-            {webcam.isStreaming && (
-              <button
-                className="action-button"
-                onClick={handleToggleCamera}
-                disabled={!isWebcamReady}
-              >
-                <span className="material-symbols-outlined">flip_camera_ios</span>
-              </button>
-            )}
           </>
         )}
         {children}
