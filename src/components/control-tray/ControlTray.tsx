@@ -16,7 +16,7 @@
 
 import cn from "classnames";
 
-import { memo, ReactNode, RefObject, useEffect, useRef, useState } from "react";
+import { memo, ReactNode, RefObject, useEffect, useRef, useState, useCallback } from "react";
 import { useLiveAPIContext } from "../../contexts/LiveAPIContext";
 import { UseMediaStreamResult } from "../../hooks/use-media-stream-mux";
 import { useScreenCapture } from "../../hooks/use-screen-capture";
@@ -143,28 +143,30 @@ function ControlTray({
     };
   }, [connected, activeVideoStream, client, videoRef]);
 
-  //handler for swapping from one video-stream to the next
-  const changeStreams = (next?: UseMediaStreamResult) => async () => {
-    if (next) {
-      try {
-        const mediaStream = await next.start();
-        setActiveVideoStream(mediaStream);
-        onVideoStreamChange(mediaStream);
-        setIsWebcamReady(true); // Set webcam as ready after stream starts
-      } catch (error) {
-        // Handle the error from starting the stream.  Important for camera switching.
-        console.error("Error starting stream:", error);
-        setIsWebcamReady(false); // Ensure webcam is not marked as ready on error
-        // Optionally, display an error message to the user.
+  const changeStreams = useCallback(
+    (next?: UseMediaStreamResult) => async () => {
+      if (next) {
+        try {
+          const mediaStream = await next.start();
+          setActiveVideoStream(mediaStream);
+          onVideoStreamChange(mediaStream);
+          setIsWebcamReady(true); // Set webcam as ready after stream starts
+        } catch (error) {
+          // Handle the error from starting the stream.  Important for camera switching.
+          console.error("Error starting stream:", error);
+          setIsWebcamReady(false); // Ensure webcam is not marked as ready on error
+          // Optionally, display an error message to the user.
+        }
+      } else {
+        setActiveVideoStream(null);
+        onVideoStreamChange(null);
+        setIsWebcamReady(false); // Webcam is no longer ready
       }
-    } else {
-      setActiveVideoStream(null);
-      onVideoStreamChange(null);
-      setIsWebcamReady(false); // Webcam is no longer ready
-    }
 
-    videoStreams.filter((msr) => msr !== next).forEach((msr) => msr.stop());
-  };
+      videoStreams.filter((msr) => msr !== next).forEach((msr) => msr.stop());
+    },
+    [setActiveVideoStream, onVideoStreamChange, setIsWebcamReady, videoStreams],
+  );
 
   const handleToggleCamera = async () => {
     if (webcam.toggleFacingMode) {
