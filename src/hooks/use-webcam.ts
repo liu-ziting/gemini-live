@@ -1,9 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { UseMediaStreamResult } from "./use-media-stream-mux";
 
-interface ExtendedUseMediaStreamResult extends UseMediaStreamResult {
-  toggleCamera: () => void;
-}
+
 
 export function useWebcam(): UseMediaStreamResult {
   const [stream, setStream] = useState<MediaStream | null>(null);
