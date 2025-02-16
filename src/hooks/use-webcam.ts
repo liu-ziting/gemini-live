@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { UseMediaStreamResult } from "./use-media-stream-mux";
 export function useWebcam(): UseMediaStreamResult {
   const [stream, setStream] = useState<MediaStream | null>(null);
@@ -39,11 +39,11 @@ export function useWebcam(): UseMediaStreamResult {
       setIsStreaming(false);
     }
   };
-  const toggleCamera = async () => {
+  const toggleCamera = useCallback(async () => {
     stop(); // 先停止当前摄像头
     setFacingMode(facingMode === "environment" ? "user" : "environment"); // 切换摄像头
     await start(); // 重新启动摄像头
-  };
+  }, [facingMode, start, stop]);
   useEffect(() => {
     const handleDoubleClick = () => {
       toggleCamera();
@@ -52,7 +52,7 @@ export function useWebcam(): UseMediaStreamResult {
     return () => {
       document.removeEventListener("dblclick", handleDoubleClick);
     };
-  }, [facingMode]);
+  }, [toggleCamera]);
   const result: UseMediaStreamResult = {
     type: "webcam",
     start,
