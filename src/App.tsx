@@ -19,16 +19,10 @@ function App() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
   const [showModal, setShowModal] = useState(true); // 控制弹出层显示
-  const [isFlipped, setIsFlipped] = useState(false); // 控制视频翻转状态
 
   // 关闭弹出层
   const handleCloseModal = () => {
     setShowModal(false);
-  };
-
-  // 切换视频翻转状态
-  const handleFlipToggle = () => {
-    setIsFlipped(!isFlipped);
   };
 
   return (
@@ -46,7 +40,6 @@ function App() {
               <video
                 className={cn("stream", {
                   hidden: !videoRef.current || !videoStream,
-                  flipped: isFlipped, // 应用翻转状态
                 })}
                 ref={videoRef}
                 autoPlay
@@ -59,10 +52,7 @@ function App() {
               supportsVideo={true}
               onVideoStreamChange={setVideoStream}
             >
-              {/* 添加一个按钮用于切换视频翻转 */}
-              <button onClick={handleFlipToggle}>
-                {isFlipped ? "Reset Video" : "Flip Video"}
-              </button>
+              {/* put your own buttons here */}
             </ControlTray>
           </main>
         </div>
