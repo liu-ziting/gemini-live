@@ -59,7 +59,14 @@ function App() {
             <button className="modal-close-button" onClick={handleCloseModal}>
               <IoClose size={24} />
             </button>
-            <p>温馨提示：为了获得最佳体验，请在浏览器中打开本页面，并<b>开启音视频权限</b>，目前暂<b>不支持中文</b>沟通！</p>
+            <p>
+            <div className="notification">
+              <p><strong>温馨提示</strong></p>
+              <p>为了确保您获得最佳体验，请在浏览器中打开本页面！</p>
+              <p>当系统弹出音视频权限请求时，请点击<strong>“允许”</strong>。</p>
+              <p>目前系统<strong>暂不支持中文</strong>沟通！</p>
+            </div>
+            </p>
           </div>
         </div>
       )}
