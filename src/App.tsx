@@ -1,26 +1,10 @@
-/**
- * Copyright 2024 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import "./App.scss";
 import { LiveAPIProvider } from "./contexts/LiveAPIContext";
-// import SidePanel from "./components/side-panel/SidePanel";
 import { Altair } from "./components/altair/Altair";
 import ControlTray from "./components/control-tray/ControlTray";
 import cn from "classnames";
+import { IoClose } from "react-icons/io5"; // 引入关闭图标
 
 const API_KEY = process.env.REACT_APP_GEMINI_API_KEY as string;
 if (typeof API_KEY !== "string") {
@@ -30,24 +14,22 @@ if (typeof API_KEY !== "string") {
 const host = "liuziting-gemini-play-98-58acmhtr50hp.deno.dev";
 const uri = `wss://${host}/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent`;
 
-alert('温馨提示：为了获得最佳体验，请在浏览器中打开本页面并开启音视频权限，目前暂不支持中文沟通！')
-
 function App() {
-  // this video reference is used for displaying the active stream, whether that is the webcam or screen capture
-  // feel free to style as you see fit
   const videoRef = useRef<HTMLVideoElement>(null);
-  // either the screen capture, the video or null, if null we hide it
   const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
+  const [showModal, setShowModal] = useState(true); // 控制弹出层显示
+
+  // 关闭弹出层
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
   return (
     <div className="App">
       <LiveAPIProvider url={uri} apiKey={API_KEY}>
         <div className="streaming-console">
-          {/* <SidePanel /> */}
           <main>
             <div className="main-app-area">
-              {/* APP goes here */}
-            
               <Altair />
               <video
                 className={cn("stream", {
@@ -69,6 +51,18 @@ function App() {
           </main>
         </div>
       </LiveAPIProvider>
+
+      {/* 弹出层 */}
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <button className="modal-close-button" onClick={handleCloseModal}>
+              <IoClose size={24} />
+            </button>
+            <p>温馨提示：为了获得最佳体验，请在浏览器中打开本页面，并<b>开启音视频权限</b>，目前暂<b>不支持中文</b>沟通！</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
