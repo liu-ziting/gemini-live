@@ -1,26 +1,9 @@
-/**
- * Copyright 2024 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import { useState, useEffect } from "react";
 import { UseMediaStreamResult } from "./use-media-stream-mux";
-
 export function useWebcam(): UseMediaStreamResult {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [isStreaming, setIsStreaming] = useState(false);
-
+  const [facingMode, setFacingMode] = useState<"environment" | "user">("environment");
   useEffect(() => {
     const handleStreamEnded = () => {
       setIsStreaming(false);
@@ -39,18 +22,16 @@ export function useWebcam(): UseMediaStreamResult {
       };
     }
   }, [stream]);
-
   const start = async () => {
     const mediaStream = await navigator.mediaDevices.getUserMedia({
       video: {
-        facingMode: "environment", // 直接指定后置摄像头
+        facingMode: facingMode,
       },
     });
     setStream(mediaStream);
     setIsStreaming(true);
     return mediaStream;
   };
-
   const stop = () => {
     if (stream) {
       stream.getTracks().forEach((track) => track.stop());
@@ -58,7 +39,20 @@ export function useWebcam(): UseMediaStreamResult {
       setIsStreaming(false);
     }
   };
-
+  const toggleCamera = async () => {
+    stop(); // 先停止当前摄像头
+    setFacingMode(facingMode === "environment" ? "user" : "environment"); // 切换摄像头
+    await start(); // 重新启动摄像头
+  };
+  useEffect(() => {
+    const handleDoubleClick = () => {
+      toggleCamera();
+    };
+    document.addEventListener("dblclick", handleDoubleClick);
+    return () => {
+      document.removeEventListener("dblclick", handleDoubleClick);
+    };
+  }, [facingMode]);
   const result: UseMediaStreamResult = {
     type: "webcam",
     start,
@@ -66,6 +60,5 @@ export function useWebcam(): UseMediaStreamResult {
     isStreaming,
     stream,
   };
-
   return result;
 }
