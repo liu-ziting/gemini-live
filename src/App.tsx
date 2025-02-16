@@ -1,10 +1,11 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import "./App.scss";
 import { LiveAPIProvider } from "./contexts/LiveAPIContext";
 import { Altair } from "./components/altair/Altair";
 import ControlTray from "./components/control-tray/ControlTray";
 import cn from "classnames";
 import { IoClose } from "react-icons/io5"; // 引入关闭图标
+import { Zenitho } from "uvcanvas"; // 导入 Lumiflex 组件
 
 const API_KEY = process.env.REACT_APP_GEMINI_API_KEY as string;
 if (typeof API_KEY !== "string") {
@@ -26,6 +27,11 @@ function App() {
 
   return (
     <div className="App">
+      {/* 使用 Lumiflex 作为背景 */}
+      <div className="background-container">
+        <Zenitho />
+      </div>
+
       <LiveAPIProvider url={uri} apiKey={API_KEY}>
         <div className="streaming-console">
           <main>
@@ -60,12 +66,12 @@ function App() {
               <IoClose size={24} />
             </button>
             <p>
-            <div className="notification">
-              <p><strong>温馨提示</strong></p>
-              <p>为了确保您获得最佳体验，请在浏览器中打开本页面！</p>
-              <p>当系统弹出音视频权限请求时，请点击<strong>“允许”</strong>。</p>
-              <p>目前系统<strong>暂不支持中文</strong>沟通！</p>
-            </div>
+              <div className="notification">
+                <p><strong>温馨提示</strong></p>
+                <p>为了确保您获得最佳体验，请在浏览器中打开本页面！</p>
+                <p>当系统弹出音视频权限请求时，请点击<strong>“允许”</strong>。</p>
+                <p>目前系统<strong>暂不支持中文</strong>沟通！</p>
+              </div>
             </p>
           </div>
         </div>
