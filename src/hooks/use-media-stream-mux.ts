@@ -20,5 +20,7 @@ export type UseMediaStreamResult = {
   stop: () => void;
   isStreaming: boolean;
   stream: MediaStream | null;
-  toggleCamera?: () => void;  
+  toggleCamera?: () => void; 
+  toggleFacingMode?: () => Promise<void>; // Make it optional in case not all streams support it
+  facingMode?: "user" | "environment"; // Optional, as screen capture won't have this
 };
