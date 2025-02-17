@@ -77,7 +77,7 @@ function App() {
                                 </p>
                                 <p>
                                     更多AIChat请访问{' '}
-                                    <a target="_blank" href="https://irritable.netlify.app">
+                                    <a target="_blank" href="https://irritable.netlify.app" rel="noopener noreferrer">
                                         irritable.netlify.app
                                     </a>
                                 </p>
