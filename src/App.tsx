@@ -75,6 +75,12 @@ function App() {
                                 <p>
                                     目前系统<strong>暂不支持中文</strong>沟通！
                                 </p>
+                                <p>
+                                    更多AIChat请访问{' '}
+                                    <a target="_blank" href="https://irritable.netlify.app">
+                                        irritable.netlify.app
+                                    </a>
+                                </p>
                             </div>
                         </p>
                     </div>
