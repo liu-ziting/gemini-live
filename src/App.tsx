@@ -7,7 +7,7 @@ import cn from 'classnames'
 import { IoClose } from 'react-icons/io5' // 引入关闭图标
 import { Zenitho } from 'uvcanvas' // 导入 Lumiflex 组件
 
-import SidePanel from './components/side-panel/SidePanel'
+// import SidePanel from './components/side-panel/SidePanel'
 
 const API_KEY = process.env.REACT_APP_GEMINI_API_KEY as string
 if (typeof API_KEY !== 'string') {
@@ -34,7 +34,7 @@ function App() {
                 <Zenitho />
             </div>
             <LiveAPIProvider url={uri} apiKey={API_KEY}>
-                <SidePanel />
+                {/* <SidePanel /> */}
                 <div className="streaming-console">
                     <main>
                         <div className="main-app-area">
